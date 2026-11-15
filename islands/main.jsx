@@ -1,11 +1,10 @@
 // Interactive islands on top of the static pages build.mjs writes. Every page is complete HTML
 // without this script (search engines, no-JS, reduced motion); these only add motion on top.
 // Components in ./reactbits are from React Bits (https://reactbits.dev, MIT + Commons Clause).
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import DecryptedText from './reactbits/DecryptedText.jsx';
-import RotatingText from './reactbits/RotatingText.jsx';
 import SpotlightCard from './reactbits/SpotlightCard.jsx';
+import Stack from './reactbits/Stack.jsx';
 import Threads from './reactbits/Threads.jsx';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -52,39 +51,25 @@ for (const el of document.querySelectorAll('[data-threads]')) {
       fade={0.6}
       opacity={0.55}
       angle={18}
-      enableMouseInteraction={!reduceMotion}
+      enableMouseInteraction={false}
     />,
   );
 }
 
-// Headlines decrypt into place once, on load. The real text stays in the DOM for screen readers.
-if (!reduceMotion) {
-  for (const el of document.querySelectorAll('[data-decrypt]')) {
-    const lines = JSON.parse(el.dataset.decrypt);
-    createRoot(el).render(
-      lines.map((line, i) => (
-        <span className="line" key={line}>
-          <DecryptedText
-            text={line}
-            animateOn="view"
-            sequential
-            revealDirection="start"
-            speed={22 + i * 6}
-            useOriginalCharsOnly={false}
-            characters="abcdefghijklmnopqrstuvwxyz/<>{}=+*#01"
-            encryptedClassName="scramble"
-          />
-        </span>
-      )),
-    );
-  }
-}
+// The home hero: a fan of tool screenshots that deals itself, and the prompt beside it naming
+// whichever tool is on top (`npx @mintwork/<tool>`, copyable). The two are separate islands,
+// so the stack announces its top card with an event.
+const TOP = 'mintwork:top-tool';
 
-// The home page prompt: `npx @mintwork/<tool>`, cycling through the tools, copyable.
 function Prompt({ tools }) {
   const [index, setIndex] = useState(0);
-  const command = `npx ${tools[index].pkg}`;
   const [state, setState] = useState('idle');
+  useEffect(() => {
+    const onTop = (e) => setIndex(e.detail);
+    window.addEventListener(TOP, onTop);
+    return () => window.removeEventListener(TOP, onTop);
+  }, []);
+  const command = `npx ${tools[index].pkg}`;
   const onCopy = async () => {
     try {
       await navigator.clipboard.writeText(command);
@@ -101,16 +86,10 @@ function Prompt({ tools }) {
           $
         </span>
         <span>npx @mintwork/</span>
-        <RotatingText
-          texts={tools.map((t) => t.name)}
-          mainClassName="rotating"
-          splitBy="characters"
-          staggerDuration={0.018}
-          rotationInterval={2600}
-          pauseOnHover
-          onNext={setIndex}
-          transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-        />
+        {/* keyed, so each new name fades in (CSS) instead of morphing */}
+        <span className="rotating" key={tools[index].name}>
+          {tools[index].name}
+        </span>
       </code>
       <button type="button" className="copy" data-state={state === 'idle' ? undefined : 'done'} onClick={onCopy}>
         {state === 'copied' ? 'Copied' : state === 'failed' ? 'Press ⌘C' : 'Copy'}
@@ -125,6 +104,33 @@ function Prompt({ tools }) {
 for (const el of document.querySelectorAll('[data-prompt]')) {
   if (reduceMotion) continue; // the static list of commands stays
   createRoot(el).render(<Prompt tools={JSON.parse(el.dataset.prompt)} />);
+}
+
+for (const el of document.querySelectorAll('[data-stack]')) {
+  const tools = JSON.parse(el.dataset.stack);
+  el.classList.add('live');
+  createRoot(el).render(
+    <Stack
+      layout="fan"
+      visible={4}
+      spread={0.55}
+      depth={0.5}
+      radius={16}
+      tilt={18}
+      autoplay={!reduceMotion}
+      autoplayDelay={4200}
+      speed={0.8}
+      pauseOnHover
+      sendToBackOnClick
+      onChange={(top) => window.dispatchEvent(new CustomEvent(TOP, { detail: top }))}
+      cards={tools.map((t) => (
+        <figure className="shot" key={t.name}>
+          <img src={t.img} alt={t.alt} draggable={false} width="960" height="660" />
+          <figcaption>{t.name}</figcaption>
+        </figure>
+      ))}
+    />,
+  );
 }
 
 // A soft light that follows the cursor across each tool in the index.

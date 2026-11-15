@@ -1,7 +1,7 @@
 // Builds the static site for https://mintwork.github.io/ (plain HTML, no Jekyll).
 // Edit the TOOLS data or the templates below, then run `npm run build` and commit the output.
 // Pages are complete static HTML; islands/main.jsx (bundled to docs/assets/app.js) adds the
-// interactive parts on top: the hero threads, the decrypting headlines, the live prompt.
+// interactive parts on top: the hero threads, the card stack of tool screenshots, the live prompt.
 import fs from 'node:fs';
 import path from 'node:path';
 import { build } from 'esbuild';
@@ -203,7 +203,7 @@ function layout({ title, description, pathname, body, jsonld, ogImage = `${SITE}
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0b1a15">
+<meta name="theme-color" content="#0f1211">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
@@ -251,9 +251,9 @@ function links(t) {
   return `<ul class="actions">${out.map(([href, label, cls]) => `<li><a class="btn${cls ? ' ' + cls : ''}" href="${href}">${label}</a></li>`).join('')}</ul>`;
 }
 
-/** A headline that decrypts into place (islands/main.jsx); plain text without the script. */
+/** A headline set line by line. */
 function display(lines) {
-  return `<h1 class="display" data-decrypt="${esc(JSON.stringify(lines))}">${lines.map((l) => `<span class="line">${esc(l)}</span>`).join('')}</h1>`;
+  return `<h1 class="display">${lines.map((l) => `<span class="line">${esc(l)}</span>`).join('')}</h1>`;
 }
 
 function toolPage(t) {
@@ -313,21 +313,27 @@ function homePage() {
   const description =
     'mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can\'t fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.';
   const prompt = TOOLS.map((t) => ({ name: t.repo, pkg: t.pkg }));
+  const stack = TOOLS.map((t) => ({ name: t.repo, img: `/assets/tools/${t.repo}.webp`, alt: t.image.alt }));
   const body = `
 <section class="hero home">
   <div class="hero-bg" data-threads aria-hidden="true"></div>
-  <div class="wrap">
-    ${display(['Developer tools', "you're glad", 'you installed.'])}
-    <p class="lede">Small, open-source tools for the parts of software work nobody else fixes. Each one is a single command away.</p>
-    <div class="prompt" data-prompt="${esc(JSON.stringify(prompt))}">
-      <ul class="prompt-static">${TOOLS.map((t) => `<li><a href="/${t.repo}/">npx ${esc(t.pkg)}</a></li>`).join('')}</ul>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      ${display(['Developer tools', "you're glad", 'you installed.'])}
+      <p class="lede">Small, open-source tools for the parts of software work nobody else fixes. Each one is a single command away.</p>
+      <div class="prompt" data-prompt="${esc(JSON.stringify(prompt))}">
+        <ul class="prompt-static">${TOOLS.map((t) => `<li><a href="/${t.repo}/">npx ${esc(t.pkg)}</a></li>`).join('')}</ul>
+      </div>
+    </div>
+    <div class="hero-stack" data-stack="${esc(JSON.stringify(stack))}">
+      <figure class="shot"><img src="${stack[0].img}" alt="${esc(stack[0].alt)}" width="960" height="660"><figcaption>${stack[0].name}</figcaption></figure>
     </div>
   </div>
 </section>
 <section class="wrap" id="tools">
   <div class="index-head"><h2>The tools</h2><p>All MIT licensed, all on npm with signed provenance.</p></div>
   <ul class="tools">
-    ${TOOLS.map((t) => `<li data-spotlight><a class="row" href="/${t.repo}/"><span class="name">${esc(t.repo)}</span><span class="what">${esc(t.tagline)}</span><code>${esc(t.cardCmd ?? `npx ${t.pkg}`)}</code></a></li>`).join('\n    ')}
+    ${TOOLS.map((t) => `<li data-spotlight><a class="row" href="/${t.repo}/"><img class="thumb" src="/assets/tools/${t.repo}.webp" alt="" width="960" height="660" loading="lazy" decoding="async"><span class="name">${esc(t.repo)}</span><span class="what">${esc(t.tagline)}</span><code>${esc(t.cardCmd ?? `npx ${t.pkg}`)}</code></a></li>`).join('\n    ')}
   </ul>
 </section>
 <section class="wrap">
