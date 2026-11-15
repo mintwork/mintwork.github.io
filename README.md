@@ -2,8 +2,8 @@
 
 Source of [mintwork.github.io](https://mintwork.github.io/): the mintwork landing page and one page per tool.
 
-Plain static HTML, served by GitHub Pages from `docs/` (no Jekyll). Edit the data and templates in
-`build.mjs`, then rebuild and commit the output:
+Plain static HTML (no Jekyll). `.github/workflows/pages.yml` runs `node build.mjs` on Node 26 and deploys
+`docs/` to GitHub Pages on every push to `main`. Edit the data and templates in `build.mjs`; to preview locally:
 
 ```bash
 node build.mjs   # writes docs/**/index.html, 404.html, sitemap.xml, robots.txt
