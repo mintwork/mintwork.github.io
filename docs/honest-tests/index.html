@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>honest-tests: catch AI-written tests that can't fail</title>
+<meta name="description" content="honest-tests is an agent skill, CLI and GitHub Action that finds fake tests written by AI coding agents and proves it with mutation testing. Vitest, Jest, Mocha, node:test, Bun, Deno and pytest.">
+<link rel="canonical" href="https://mintwork.github.io/honest-tests/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="mintwork">
+<meta property="og:title" content="honest-tests: catch AI-written tests that can't fail">
+<meta property="og:description" content="honest-tests is an agent skill, CLI and GitHub Action that finds fake tests written by AI coding agents and proves it with mutation testing. Vitest, Jest, Mocha, node:test, Bun, Deno and pytest.">
+<meta property="og:url" content="https://mintwork.github.io/honest-tests/">
+<meta property="og:image" content="https://mintwork.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0D1714">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="stylesheet" href="/assets/site.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"honest-tests","description":"honest-tests is an agent skill, CLI and GitHub Action that finds fake tests written by AI coding agents and proves it with mutation testing. Vitest, Jest, Mocha, node:test, Bun, Deno and pytest.","url":"https://mintwork.github.io/honest-tests/","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows","softwareRequirements":"Node.js 22+","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/mintwork/honest-tests","downloadUrl":"https://www.npmjs.com/package/@mintwork/honest-tests","keywords":"mutation testing, test quality, fake tests, AI generated tests, vitest, jest","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/"}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="/"><svg class="mark" viewBox="104 104 304 304" aria-hidden="true" focusable="false"><defs><mask id="leaf-vein"><rect width="512" height="512" fill="#000"/><path d="M126 386 A260 260 0 0 1 386 126 A260 260 0 0 1 126 386 Z" fill="#fff"/><path d="M135.19 395.19 L301.41 213.41 A2 2 0 0 0 298.59 210.59 L116.81 376.81 Z" fill="#000"/></mask></defs><rect width="512" height="512" fill="currentColor" mask="url(#leaf-vein)"/></svg><span>mintwork</span></a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="/#tools">Tools</a></li>
+        <li><a href="https://github.com/mintwork">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">honest-tests</p>
+    <h1>Catch AI-written tests that can't fail</h1>
+    <p class="lede">Your AI wrote 200 tests. Many of them can't fail. honest-tests finds them, and proves it by breaking your code and watching the tests stay green.</p>
+    <pre><code>npx @mintwork/honest-tests audit .               # find tests that can't fail
+npx @mintwork/honest-tests mutate src/pricing.ts # prove it: break the code, see who notices</code></pre>
+    <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/honest-tests">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/honest-tests">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/honest-tests-audit">GitHub Marketplace</a></li><li><a class="btn" href="https://www.agensi.io/skills/honest-tests">Agensi</a></li></ul>
+  </div>
+</section>
+<section class="wrap">
+  <img class="demo" src="https://raw.githubusercontent.com/mintwork/honest-tests/main/docs/demo.gif" alt="honest-tests audit finds 11 of 15 tests that can't fail in a sample project; honest-tests mutate then shows 22 of 26 code changes survive the test suite" width="1200" height="760" loading="lazy" decoding="async">
+  
+</section>
+<section class="wrap prose">
+  <h2>The problem</h2>
+  <p>Ask an agent to "add tests" and you get a wall of green checkmarks. Look closer: a value compared to itself, a test with no assertion, an assertion inside a <code>try/catch</code> that swallows the failure, a test that checks the mock it just configured. Every one passes. Coverage goes up. Nothing is verified.</p>
+  <p>honest-tests is a skill that stops Claude Code, Codex and Cursor from writing these tests, plus a CLI that finds them in the suite you already have.</p>
+</section>
+<section class="wrap">
+  <h2>What it does</h2>
+  <ul class="grid">
+    <li class="card"><h3>16 fake-test rules</h3><p>Tautologies, missing assertions, swallowed failures, asserting on mocks or on literals the test just built, mocked units under test, leftover <code>.only</code>, and more.</p></li>
+    <li class="card"><h3>Mutation testing built in</h3><p>Flips operators, constants and return values on a temp copy of your project, runs the related tests, and lists every change nobody noticed.</p></li>
+    <li class="card"><h3>Agent skill</h3><p>Teaches the agent to write tests that can go red for the right reason, and to self-audit before it says "done".</p></li>
+    <li class="card"><h3>PR comments</h3><p>The <a href="https://github.com/marketplace/actions/honest-tests-audit">Honest Tests Audit</a> Action comments on every pull request with how many of its new tests can't fail.</p></li>
+    <li class="card"><h3>Every major runner</h3><p>Vitest, Jest, Mocha, node:test, Bun, Deno, plus pytest and unittest for Python.</p></li>
+    <li class="card"><h3>SARIF and JSON</h3><p>Findings in GitHub code scanning, or machine-readable output for any agent.</p></li>
+  </ul>
+</section>
+<section class="wrap prose"><h2>Install</h2><p><strong>Claude Code</strong> (plugin with skill and slash commands):</p><pre><code>/plugin marketplace add mintwork/honest-tests
+/plugin install honest-tests@honest-tests</code></pre><p><strong>Codex and Cursor:</strong></p><pre><code>npx @mintwork/honest-tests init codex    # adds a section to AGENTS.md
+npx @mintwork/honest-tests init cursor   # writes .cursor/rules/honest-tests.mdc</code></pre></section>
+<section class="wrap prose"><h2>GitHub Action</h2><p>Comment on every pull request with what its tests are worth:</p><pre><code>- uses: actions/checkout@v7
+  with:
+    fetch-depth: 0
+- uses: mintwork/honest-tests@v0</code></pre></section>
+<section class="wrap prose cta">
+  <h2>Open source, MIT licensed</h2>
+  <p>Built in CI and published to npm with signed provenance. Full documentation, changelog and issues are on <a href="https://github.com/mintwork/honest-tests">GitHub</a>.</p>
+  <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/honest-tests">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/honest-tests">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/honest-tests-audit">GitHub Marketplace</a></li><li><a class="btn" href="https://www.agensi.io/skills/honest-tests">Agensi</a></li></ul>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
+    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+  </div>
+</footer>
+</body>
+</html>

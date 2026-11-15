@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mintwork.github.io/sitemap.xml
