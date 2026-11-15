@@ -1,100 +1,202 @@
+/* mintwork.github.io. Fonts are self-hosted (copied from @fontsource by build.mjs). */
+@font-face {
+  font-family: "Martian Mono";
+  src: url("/assets/fonts/martian-mono.woff2") format("woff2-variations");
+  font-weight: 100 800;
+  font-stretch: 75% 112.5%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/assets/fonts/schibsted-grotesk.woff2") format("woff2-variations");
+  font-weight: 400 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/assets/fonts/schibsted-grotesk-italic.woff2") format("woff2-variations");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
-  --mint: #7ee2b8;
-  --ink: #0d1714;
-  --ink-2: #13211d;
-  --line: #22362f;
-  --text: #e6f2ed;
-  --muted: #a3b9b1;
-  --max: 1040px;
+  --forest: #0b1a15; /* page */
+  --moss: #132a23; /* raised surfaces */
+  --vein: #234238; /* lines and borders */
+  --mint: #7ee2b8; /* brand, links, focus */
+  --pollen: #f2e58a; /* the prompt sigil and confirmations only */
+  --frost: #eaf6f0; /* text */
+  --sage: #9db8ad; /* secondary text */
+  --mono: "Martian Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sans: "Schibsted Grotesk", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  --max: 1160px;
+  --measure: 66ch;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
   margin: 0;
-  background: var(--ink);
-  color: var(--text);
-  font: 17px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  background: var(--forest);
+  color: var(--frost);
+  font: 400 18px/1.6 var(--sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-a { color: var(--mint); text-underline-offset: 3px; }
+a { color: var(--mint); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 3px solid var(--mint); outline-offset: 3px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; border-radius: 6px; }
+::selection { background: var(--mint); color: var(--forest); }
 
-.wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px); }
 
-.skip { position: absolute; left: -9999px; top: 8px; background: var(--mint); color: var(--ink); padding: 8px 14px; border-radius: 6px; font-weight: 700; z-index: 10; }
+.skip { position: absolute; left: -9999px; top: 8px; background: var(--mint); color: var(--forest); padding: 8px 14px; border-radius: 8px; font-weight: 700; z-index: 20; }
 .skip:focus { left: 8px; }
 
-.top { border-bottom: 1px solid var(--line); }
-.bar { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 750; font-size: 21px; letter-spacing: -0.03em; }
-.brand .mark { width: 26px; height: 26px; color: var(--mint); }
-.top nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
-.top nav a { color: var(--text); text-decoration: none; font-weight: 550; }
+/* Header ------------------------------------------------------------------------------- */
+.top { position: absolute; inset: 0 0 auto; z-index: 5; }
+.top .bar { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--frost); text-decoration: none; font: 700 20px/1 var(--sans); letter-spacing: -0.02em; }
+.brand .mark { width: 24px; height: 24px; color: var(--mint); }
+.top ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+.top nav a { color: var(--frost); text-decoration: none; font-weight: 500; }
 .top nav a:hover { color: var(--mint); }
 
-.hero { padding: 72px 0 40px; }
-.hero.home { padding: 96px 0 56px; }
-.eyebrow { color: var(--mint); font: 600 15px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin: 0 0 16px; }
-h1 { font-size: clamp(34px, 5.5vw, 56px); line-height: 1.08; letter-spacing: -0.035em; margin: 0 0 20px; max-width: 18ch; }
-.home h1 { max-width: 16ch; }
-.lede { font-size: 20px; color: var(--muted); max-width: 60ch; margin: 0 0 28px; }
+/* Hero: the flowing threads sit behind, the type does the work ------------------------- */
+.hero { position: relative; overflow: hidden; isolation: isolate; padding: 156px 0 88px; }
+.hero.home { min-height: min(100svh, 920px); display: flex; align-items: flex-end; padding-bottom: 96px; }
+.hero-bg { position: absolute; inset: 0; z-index: -1; pointer-events: auto; }
+.hero::after { content: ""; position: absolute; inset: auto 0 0; height: 40%; z-index: -1; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--forest)); }
 
-h2 { font-size: 28px; letter-spacing: -0.02em; margin: 64px 0 16px; }
-h3 { font-size: 18px; margin: 0 0 8px; }
-.prose p, .prose li { max-width: 72ch; }
-.muted { color: var(--muted); }
-.center { text-align: center; }
-
-pre {
-  background: #08100d;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 16px 18px;
-  overflow-x: auto;
-  font: 14.5px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  margin: 0 0 20px;
+.display {
+  font-family: var(--mono);
+  font-weight: 640;
+  font-stretch: 87.5%;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  margin: 0 0 28px;
+  max-width: 17ch;
 }
-pre code { color: var(--text); }
-:not(pre) > code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--ink-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+.home .display { font-size: clamp(2.8rem, 8.4vw, 7.4rem); }
+.tool .display { font-size: clamp(2.2rem, 5.6vw, 4.6rem); max-width: 20ch; }
+.display .line { display: block; }
+.display .scramble { color: var(--mint); opacity: 0.7; }
 
-.actions { display: flex; flex-wrap: wrap; gap: 12px; list-style: none; padding: 0; margin: 8px 0 0; }
-.btn { display: inline-block; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line); color: var(--text); text-decoration: none; font-weight: 600; background: var(--ink-2); }
+.lede { font-size: clamp(1.15rem, 1.9vw, 1.4rem); line-height: 1.5; color: var(--sage); max-width: 46ch; margin: 0 0 40px; }
+
+.crumb { font: 500 15px/1 var(--sans); margin: 0 0 28px; color: var(--sage); }
+.crumb a { color: var(--sage); text-decoration: none; }
+.crumb a:hover { color: var(--mint); }
+.crumb span { color: var(--mint); }
+
+/* The command prompt ------------------------------------------------------------------- */
+.prompt { min-height: 64px; }
+.prompt-static { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; font: 500 15px/1.4 var(--mono); color: var(--sage); }
+.prompt-static a { color: var(--frost); text-decoration: none; }
+.prompt-static a:hover { color: var(--mint); }
+.prompt-live { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
+.prompt-live code {
+  display: inline-flex; align-items: center; font: 500 clamp(1rem, 2.1vw, 1.35rem)/1 var(--mono);
+  background: rgba(19, 42, 35, 0.72); border: 1px solid var(--vein); border-radius: 14px; padding: 18px 22px;
+  backdrop-filter: blur(6px); white-space: pre;
+}
+.sigil { color: var(--pollen); margin-right: 0.62em; }
+.rotating { display: inline-flex; overflow: hidden; color: var(--mint); }
+.prompt-link { font-weight: 500; }
+
+/* Buttons ------------------------------------------------------------------------------ */
+.actions { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 0; padding: 0; }
+.btn { display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 999px; font-weight: 600;
+  text-decoration: none; color: var(--frost); border: 1px solid var(--vein); background: rgba(19, 42, 35, 0.6);
+  transition: border-color .15s, background-color .15s; }
 .btn:hover { border-color: var(--mint); }
-.btn.primary { background: var(--mint); border-color: var(--mint); color: var(--ink); }
-.btn.primary:hover { background: #a4ecce; }
+.btn.primary { background: var(--mint); color: var(--forest); border-color: var(--mint); }
+.btn.primary:hover { background: var(--frost); border-color: var(--frost); }
 
-.demo { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); margin: 16px 0; background: #08100d; }
+.copy { font: 600 13px/1 var(--sans); color: var(--frost); background: var(--moss); border: 1px solid var(--vein);
+  border-radius: 999px; padding: 9px 14px; cursor: pointer; transition: border-color .15s, color .15s; }
+.copy:hover { border-color: var(--mint); }
+.copy[data-state="done"] { color: var(--forest); background: var(--pollen); border-color: var(--pollen); }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
-.card { background: var(--ink-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; }
-.card p { margin: 0; }
-.card.tool { display: flex; flex-direction: column; gap: 10px; }
-.card.tool h3 { font-size: 22px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-.card.tool h3 a { text-decoration: none; }
-.card.tool h3 a:hover { text-decoration: underline; }
-.card.tool pre { margin: auto 0 0; padding: 10px 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Code --------------------------------------------------------------------------------- */
+code { font-family: var(--mono); font-size: 0.84em; }
+:not(pre) > code { background: var(--moss); border: 1px solid var(--vein); border-radius: 6px; padding: 0.08em 0.4em; }
+pre { position: relative; margin: 0; background: #08130f; border: 1px solid var(--vein); border-radius: 14px;
+  padding: 20px 22px; overflow-x: auto; font: 450 14.5px/1.75 var(--mono); color: var(--frost); }
+pre code { font-size: inherit; }
+pre[data-copy] { padding-right: 92px; }
+pre .copy { position: absolute; top: 14px; right: 14px; }
+.hero pre { max-width: 820px; background: rgba(8, 19, 15, 0.78); backdrop-filter: blur(6px); }
 
-.principles { padding-left: 20px; }
-.principles li { margin: 0 0 8px; }
+/* Sections ----------------------------------------------------------------------------- */
+main > section:not(.hero) { padding: clamp(56px, 8vw, 104px) 0 0; }
+h2 { font: 700 clamp(1.6rem, 2.8vw, 2.2rem)/1.15 var(--sans); letter-spacing: -0.025em; margin: 0 0 24px; }
+h3 { font: 650 1.15rem/1.3 var(--sans); letter-spacing: -0.01em; margin: 0 0 6px; }
+.prose > * { max-width: var(--measure); }
+.prose > pre { max-width: 860px; }
+.prose p { margin: 0 0 1.1em; }
+.muted { color: var(--sage); }
 
-.cta { border-top: 1px solid var(--line); margin-top: 72px; padding-bottom: 24px; }
-
-.foot { border-top: 1px solid var(--line); margin-top: 72px; padding: 24px 0 40px; color: var(--muted); font-size: 15px; }
-.foot p { margin: 4px 0; }
-
-@media (max-width: 600px) {
-  body { font-size: 16px; }
-  .hero, .hero.home { padding: 48px 0 24px; }
-  .lede { font-size: 18px; }
-  .top nav ul { gap: 16px; }
+/* Home: the index of tools ------------------------------------------------------------- */
+.index-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.index-head p { color: var(--sage); margin: 0; }
+.tools { list-style: none; margin: 16px -24px 0; padding: 0; }
+.tools > li { border-top: 1px solid var(--vein); }
+.tools > li:last-child { border-bottom: 1px solid var(--vein); }
+.tools .row {
+  display: grid; grid-template-columns: minmax(0, 25rem) minmax(0, 1fr) 19rem; gap: 8px 40px; align-items: baseline;
+  padding: 30px 24px; color: var(--frost); text-decoration: none; border-radius: 18px;
 }
+.row .name { white-space: nowrap; font: 640 clamp(1.5rem, 3vw, 2.3rem)/1.05 var(--mono); font-stretch: 87.5%; letter-spacing: -0.045em; color: var(--frost); transition: color .15s; }
+.row:hover .name, .row:focus-visible .name { color: var(--mint); }
+.row .what { color: var(--sage); font-size: 1.05rem; }
+.row code { color: var(--mint); background: none; border: 0; padding: 0; white-space: nowrap; font-size: 13.5px; justify-self: end; }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+.principles { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 56px; max-width: none; }
+.principles strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+.principles span { color: var(--sage); }
+
+/* Tool pages --------------------------------------------------------------------------- */
+.demo { display: block; width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--vein); background: #08130f;
+  box-shadow: 0 40px 120px -40px rgba(126, 226, 184, 0.18); }
+.center { text-align: center; }
+.features { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 64px; }
+.features li { padding-left: 22px; border-left: 2px solid var(--vein); }
+.features li:hover { border-left-color: var(--mint); }
+.features p { margin: 0; color: var(--sage); }
+.cta { padding-bottom: 24px; }
+.cta .lede { margin-bottom: 0; }
+
+/* Footer ------------------------------------------------------------------------------- */
+.foot { margin-top: clamp(72px, 10vw, 136px); border-top: 1px solid var(--vein); padding: 40px 0 56px; color: var(--sage); font-size: 15px; }
+.foot .wrap { display: flex; flex-wrap: wrap; gap: 20px 48px; justify-content: space-between; }
+.foot p { margin: 0; }
+.foot ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 24px; }
+.foot a { color: var(--frost); text-decoration: none; }
+.foot a:hover { color: var(--mint); }
+
+/* Small screens ------------------------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .tools .row { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); }
+  .row code { grid-column: 2; justify-self: start; }
+}
+@media (max-width: 860px) {
+  .tools .row { grid-template-columns: 1fr; gap: 8px; padding: 24px; }
+  .row code { justify-self: start; white-space: normal; }
+  .features, .principles { grid-template-columns: 1fr; gap: 28px; }
+  .hero { padding-top: 128px; }
+  .hero.home { min-height: 0; padding-top: 168px; }
+  .index-head { display: block; }
+}
+@media (max-width: 520px) {
+  .top ul { gap: 18px; }
+  .prompt-live code { width: 100%; font-size: 15px; padding: 16px; }
+  pre[data-copy] { padding-right: 22px; padding-bottom: 62px; }
+  pre .copy { top: auto; bottom: 14px; right: 14px; }
 }

@@ -16,11 +16,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1714">
+<meta name="theme-color" content="#0b1a15">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"tokenscope","description":"tokenscope reads your AI coding agent logs locally and shows what was wasted: cache rebuilds, loops, re-reads and huge tool outputs, each with a dollar estimate and a fix.","url":"https://mintwork.github.io/tokenscope/","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows","softwareRequirements":"Node.js 22+","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/mintwork/tokenscope","downloadUrl":"https://www.npmjs.com/package/@mintwork/tokenscope","keywords":"Claude Code cost, token usage, prompt caching, AI coding agent, LLM cost, flame graph","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/"}}</script>
 </head>
 <body>
@@ -38,12 +42,14 @@
 </header>
 <main id="main">
 
-<section class="hero">
+<section class="hero tool">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
   <div class="wrap">
-    <p class="eyebrow">tokenscope</p>
-    <h1>Find the money your AI coding agent wasted</h1>
+    <p class="crumb"><a href="/">mintwork</a> / <span>tokenscope</span></p>
+    <h1 class="display" data-decrypt="[&quot;Find the money your AI coding agent wasted&quot;]"><span class="line">Find the money your AI coding agent wasted</span></h1>
     <p class="lede">ccusage tells you what you spent. tokenscope tells you what you wasted, and how to stop it.</p>
-    <pre><code>npx @mintwork/tokenscope               # waste first, then spend
+    <pre data-copy="npx @mintwork/tokenscope
+npx @mintwork/tokenscope --html --open"><code>npx @mintwork/tokenscope               # waste first, then spend
 npx @mintwork/tokenscope --html --open # interactive report with a flame graph</code></pre>
     <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/tokenscope">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/tokenscope">npm</a></li></ul>
   </div>
@@ -59,30 +65,33 @@ npx @mintwork/tokenscope --html --open # interactive report with a flame graph</
 </section>
 <section class="wrap">
   <h2>What it does</h2>
-  <ul class="grid">
-    <li class="card"><h3>Cache rebuilds, explained</h3><p>Finds prompt-cache rebuilds after you paused or a tool ran long, names the cause, and says when a 1-hour cache TTL would actually save money.</p></li>
-    <li class="card"><h3>Loops and repeats</h3><p>The same tool call with the same result, again and again, plus unchanged file re-reads and failed-edit retry storms.</p></li>
-    <li class="card"><h3>Counterfactual estimates</h3><p>Every dollar figure is the difference to one specific better choice, never the full cost of a request. Uncertain savings are shown separately.</p></li>
-    <li class="card"><h3>Flame graph of spend</h3><p>Project → session → turn → API call → subagent, in a self-contained HTML report you can click to zoom.</p></li>
-    <li class="card"><h3>16 agents</h3><p>Claude Code, Codex CLI, Gemini CLI, OpenCode, Cline, Roo Code, GitHub Copilot CLI, Goose, Amp, Aider and more.</p></li>
-    <li class="card"><h3>100% local</h3><p>Zero dependencies, no API keys, no network calls. Your logs never leave your machine.</p></li>
+  <ul class="features">
+    <li><h3>Cache rebuilds, explained</h3><p>Finds prompt-cache rebuilds after you paused or a tool ran long, names the cause, and says when a 1-hour cache TTL would actually save money.</p></li>
+    <li><h3>Loops and repeats</h3><p>The same tool call with the same result, again and again, plus unchanged file re-reads and failed-edit retry storms.</p></li>
+    <li><h3>Counterfactual estimates</h3><p>Every dollar figure is the difference to one specific better choice, never the full cost of a request. Uncertain savings are shown separately.</p></li>
+    <li><h3>Flame graph of spend</h3><p>Project → session → turn → API call → subagent, in a self-contained HTML report you can click to zoom.</p></li>
+    <li><h3>16 agents</h3><p>Claude Code, Codex CLI, Gemini CLI, OpenCode, Cline, Roo Code, GitHub Copilot CLI, Goose, Amp, Aider and more.</p></li>
+    <li><h3>100% local</h3><p>Zero dependencies, no API keys, no network calls. Your logs never leave your machine.</p></li>
   </ul>
 </section>
-<section class="wrap prose"><h2>Install</h2><p>Needs Node 22+. No configuration.</p><pre><code>npx @mintwork/tokenscope
+<section class="wrap prose"><h2>Install</h2><p>Needs Node 22+. No configuration.</p><pre data-copy="npx @mintwork/tokenscope
+npx @mintwork/tokenscope --html --open
+npx @mintwork/tokenscope diff
+npx @mintwork/tokenscope watch"><code>npx @mintwork/tokenscope
 npx @mintwork/tokenscope --html --open
 npx @mintwork/tokenscope diff        # what got more wasteful between two periods
 npx @mintwork/tokenscope watch       # live waste alerts during a Claude Code session</code></pre></section>
 <section class="wrap prose"><h2>tokenscope vs ccusage</h2><p><a href="https://github.com/ccusage/ccusage">ccusage</a> is great at tracking spend: daily and monthly totals, a live status line, billing blocks. tokenscope answers a different question: <em>what did I waste, and how do I stop?</em> Use ccusage to track the bill. Run tokenscope when the bill surprises you.</p></section>
 <section class="wrap prose cta">
   <h2>Open source, MIT licensed</h2>
-  <p>Built in CI and published to npm with signed provenance. Full documentation, changelog and issues are on <a href="https://github.com/mintwork/tokenscope">GitHub</a>.</p>
+  <p class="lede">Built in CI and published to npm with signed provenance. The full docs, changelog and issues are on <a href="https://github.com/mintwork/tokenscope">GitHub</a>.</p>
   <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/tokenscope">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/tokenscope">npm</a></li></ul>
 </section>
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
-    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="https://github.com/mintwork">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
   </div>
 </footer>
 </body>

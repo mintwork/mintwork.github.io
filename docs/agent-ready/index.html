@@ -16,11 +16,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1714">
+<meta name="theme-color" content="#0b1a15">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"agent-ready","description":"agent-ready scores how well Claude Code, Codex and Cursor can work in your repository, from 0 to 100, and auto-fixes the gaps: AGENTS.md, ignore files, test and lint commands.","url":"https://mintwork.github.io/agent-ready/","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows","softwareRequirements":"Node.js 22+","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/mintwork/agent-ready","downloadUrl":"https://www.npmjs.com/package/@mintwork/agent-ready","keywords":"AGENTS.md, CLAUDE.md, AI coding agent, repository score, developer experience","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/"}}</script>
 </head>
 <body>
@@ -38,12 +42,14 @@
 </header>
 <main id="main">
 
-<section class="hero">
+<section class="hero tool">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
   <div class="wrap">
-    <p class="eyebrow">agent-ready</p>
-    <h1>Lighthouse for AI coding agents</h1>
+    <p class="crumb"><a href="/">mintwork</a> / <span>agent-ready</span></p>
+    <h1 class="display" data-decrypt="[&quot;Lighthouse for AI coding agents&quot;]"><span class="line">Lighthouse for AI coding agents</span></h1>
     <p class="lede">Score how well Claude Code, Codex and Cursor can work in your repo, then auto-fix the gaps.</p>
-    <pre><code>npx @mintwork/agent-ready         # score this repo
+    <pre data-copy="npx @mintwork/agent-ready
+npx @mintwork/agent-ready --fix"><code>npx @mintwork/agent-ready         # score this repo
 npx @mintwork/agent-ready --fix   # apply the safe fixes</code></pre>
     <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/agent-ready">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/agent-ready">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/agent-readiness-score">GitHub Marketplace</a></li></ul>
   </div>
@@ -59,19 +65,25 @@ npx @mintwork/agent-ready --fix   # apply the safe fixes</code></pre>
 </section>
 <section class="wrap">
   <h2>What it does</h2>
-  <ul class="grid">
-    <li class="card"><h3>Five categories</h3><p>Context docs, feedback loops, navigability, type safety and safety, weighted into one score.</p></li>
-    <li class="card"><h3>Auto-fix</h3><p><code>--fix</code> writes a starter AGENTS.md and CLAUDE.md from your real scripts and structure, and fixes ignore files.</p></li>
-    <li class="card"><h3>Doc drift</h3><p>Flags agent docs that mention files, scripts or commands that no longer exist.</p></li>
-    <li class="card"><h3>CI gate</h3><p>The <a href="https://github.com/marketplace/actions/agent-readiness-score">Agent Readiness Score</a> Action fails pull requests that make the repo worse for agents.</p></li>
-    <li class="card"><h3>Many stacks</h3><p>JS/TS, Python, Go and Rust, with basic Java and Kotlin support, and it understands monorepos.</p></li>
-    <li class="card"><h3>Read-only by default</h3><p>Zero dependencies. Nothing changes unless you pass <code>--fix</code>.</p></li>
+  <ul class="features">
+    <li><h3>Five categories</h3><p>Context docs, feedback loops, navigability, type safety and safety, weighted into one score.</p></li>
+    <li><h3>Auto-fix</h3><p><code>--fix</code> writes a starter AGENTS.md and CLAUDE.md from your real scripts and structure, and fixes ignore files.</p></li>
+    <li><h3>Doc drift</h3><p>Flags agent docs that mention files, scripts or commands that no longer exist.</p></li>
+    <li><h3>CI gate</h3><p>The <a href="https://github.com/marketplace/actions/agent-readiness-score">Agent Readiness Score</a> Action fails pull requests that make the repo worse for agents.</p></li>
+    <li><h3>Many stacks</h3><p>JS/TS, Python, Go and Rust, with basic Java and Kotlin support, and it understands monorepos.</p></li>
+    <li><h3>Read-only by default</h3><p>Zero dependencies. Nothing changes unless you pass <code>--fix</code>.</p></li>
   </ul>
 </section>
-<section class="wrap prose"><h2>Install</h2><pre><code>npx @mintwork/agent-ready            # no install
+<section class="wrap prose"><h2>Install</h2><pre data-copy="npx @mintwork/agent-ready
+npm i -D @mintwork/agent-ready
+npx @mintwork/agent-ready --badge"><code>npx @mintwork/agent-ready            # no install
 npm i -D @mintwork/agent-ready       # or pin it in your project
 npx @mintwork/agent-ready --badge    # a README badge with your score</code></pre></section>
-<section class="wrap prose"><h2>GitHub Action</h2><pre><code>- uses: actions/checkout@v7
+<section class="wrap prose"><h2>GitHub Action</h2><pre data-copy="- uses: actions/checkout@v7
+  with: { fetch-depth: 0 }
+- uses: mintwork/agent-ready@v0
+  with:
+    min-score: 75"><code>- uses: actions/checkout@v7
   with: { fetch-depth: 0 }
 - uses: mintwork/agent-ready@v0
   with:
@@ -79,14 +91,14 @@ npx @mintwork/agent-ready --badge    # a README badge with your score</code></pr
 <section class="wrap prose"><h2>How is this different from a linter?</h2><p>A linter tells you your code is wrong. agent-ready tells you your repository is hard to work in, for the coworker who reads every file literally, never asks a clarifying question, and runs whatever <code>npm run build</code> does.</p></section>
 <section class="wrap prose cta">
   <h2>Open source, MIT licensed</h2>
-  <p>Built in CI and published to npm with signed provenance. Full documentation, changelog and issues are on <a href="https://github.com/mintwork/agent-ready">GitHub</a>.</p>
+  <p class="lede">Built in CI and published to npm with signed provenance. The full docs, changelog and issues are on <a href="https://github.com/mintwork/agent-ready">GitHub</a>.</p>
   <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/agent-ready">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/agent-ready">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/agent-readiness-score">GitHub Marketplace</a></li></ul>
 </section>
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
-    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="https://github.com/mintwork">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
   </div>
 </footer>
 </body>

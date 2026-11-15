@@ -16,11 +16,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1714">
+<meta name="theme-color" content="#0b1a15">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"wcag-audit-skill","description":"An agent skill, CLI and GitHub Action that audits UIs against WCAG 2.2: static source scan, real-browser axe-core scan, verified findings, minimal fixes and SARIF output.","url":"https://mintwork.github.io/wcag-audit-skill/","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows","softwareRequirements":"Node.js 22+","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/mintwork/wcag-audit-skill","downloadUrl":"https://www.npmjs.com/package/@mintwork/wcag-audit-skill","keywords":"WCAG 2.2, accessibility audit, a11y, axe-core, Claude Code skill, SARIF","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/"}}</script>
 </head>
 <body>
@@ -38,12 +42,14 @@
 </header>
 <main id="main">
 
-<section class="hero">
+<section class="hero tool">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
   <div class="wrap">
-    <p class="eyebrow">wcag-audit-skill</p>
-    <h1>WCAG 2.2 accessibility audit for AI coding agents</h1>
+    <p class="crumb"><a href="/">mintwork</a> / <span>wcag-audit-skill</span></p>
+    <h1 class="display" data-decrypt="[&quot;WCAG 2.2 accessibility audit for AI coding agents&quot;]"><span class="line">WCAG 2.2 accessibility audit for AI coding agents</span></h1>
     <p class="lede">AI ships inaccessible UIs. This makes your agent find the barriers, verify each one, and fix them with minimal, explained changes.</p>
-    <pre><code>npx @mintwork/wcag-audit-skill scan ./src                  # static source scan
+    <pre data-copy="npx @mintwork/wcag-audit-skill scan ./src
+npx @mintwork/wcag-audit-skill scan http://localhost:3000"><code>npx @mintwork/wcag-audit-skill scan ./src                  # static source scan
 npx @mintwork/wcag-audit-skill scan http://localhost:3000   # real-browser scan</code></pre>
     <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/wcag-audit-skill">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/wcag-audit-skill">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/wcag-accessibility-audit">GitHub Marketplace</a></li><li><a class="btn" href="https://www.agensi.io/skills/wcag-accessibility-audit">Agensi</a></li></ul>
   </div>
@@ -59,30 +65,32 @@ npx @mintwork/wcag-audit-skill scan http://localhost:3000   # real-browser scan<
 </section>
 <section class="wrap">
   <h2>What it does</h2>
-  <ul class="grid">
-    <li class="card"><h3>Static scan, many frameworks</h3><p>30 rules for HTML, React (JSX/TSX), Vue, Svelte, Astro, Angular, MDX and CSS, including Tailwind contrast and focus styles.</p></li>
-    <li class="card"><h3>Real browser</h3><p>Runs axe-core in Chromium and tabs through the page to catch keyboard traps and invisible focus, across states like open dialogs and dark mode.</p></li>
-    <li class="card"><h3>Verified findings</h3><p>Every candidate is re-checked to disprove it: confirmed, needs your input, or rejected, with the evidence written down.</p></li>
-    <li class="card"><h3>Minimal fixes</h3><p>Native HTML first, in your framework's idiom. Visual or copy changes need your OK, and it never invents alt text.</p></li>
-    <li class="card"><h3>CI and code scanning</h3><p>SARIF output, a CI baseline that fails only on new findings, and the <a href="https://github.com/marketplace/actions/wcag-accessibility-audit">WCAG Accessibility Audit</a> Action.</p></li>
-    <li class="card"><h3>Honest limits</h3><p>Automation finds part of WCAG. Reports always list what still needs a human: a screen-reader pass, zoom and reflow, captions.</p></li>
+  <ul class="features">
+    <li><h3>Static scan, many frameworks</h3><p>30 rules for HTML, React (JSX/TSX), Vue, Svelte, Astro, Angular, MDX and CSS, including Tailwind contrast and focus styles.</p></li>
+    <li><h3>Real browser</h3><p>Runs axe-core in Chromium and tabs through the page to catch keyboard traps and invisible focus, across states like open dialogs and dark mode.</p></li>
+    <li><h3>Verified findings</h3><p>Every candidate is re-checked to disprove it: confirmed, needs your input, or rejected, with the evidence written down.</p></li>
+    <li><h3>Minimal fixes</h3><p>Native HTML first, in your framework's idiom. Visual or copy changes need your OK, and it never invents alt text.</p></li>
+    <li><h3>CI and code scanning</h3><p>SARIF output, a CI baseline that fails only on new findings, and the <a href="https://github.com/marketplace/actions/wcag-accessibility-audit">WCAG Accessibility Audit</a> Action.</p></li>
+    <li><h3>Honest limits</h3><p>Automation finds part of WCAG. Reports always list what still needs a human: a screen-reader pass, zoom and reflow, captions.</p></li>
   </ul>
 </section>
-<section class="wrap prose"><h2>Install</h2><p><strong>Claude Code:</strong></p><pre><code>/plugin marketplace add mintwork/wcag-audit-skill
-/plugin install wcag-audit@wcag-audit-skill</code></pre><p><strong>Any skills-compatible agent:</strong></p><pre><code>npx skills add https://github.com/mintwork/wcag-audit-skill --skill wcag-audit</code></pre></section>
-<section class="wrap prose"><h2>GitHub Action</h2><p>Findings appear as pull request annotations and under Security → Code scanning:</p><pre><code>- uses: actions/checkout@v7
+<section class="wrap prose"><h2>Install</h2><p><strong>Claude Code:</strong></p><pre data-copy="/plugin marketplace add mintwork/wcag-audit-skill
+/plugin install wcag-audit@wcag-audit-skill"><code>/plugin marketplace add mintwork/wcag-audit-skill
+/plugin install wcag-audit@wcag-audit-skill</code></pre><p><strong>Any skills-compatible agent:</strong></p><pre data-copy="npx skills add https://github.com/mintwork/wcag-audit-skill --skill wcag-audit"><code>npx skills add https://github.com/mintwork/wcag-audit-skill --skill wcag-audit</code></pre></section>
+<section class="wrap prose"><h2>GitHub Action</h2><p>Findings appear as pull request annotations and under Security → Code scanning:</p><pre data-copy="- uses: actions/checkout@v7
+- uses: mintwork/wcag-audit-skill@v0"><code>- uses: actions/checkout@v7
 - uses: mintwork/wcag-audit-skill@v0</code></pre></section>
 <section class="wrap prose"><h2>How is this different from axe or a linter?</h2><p>eslint-plugin-jsx-a11y covers one framework with no browser and no fixes. axe and Lighthouse are runtime only, with no source locations. This uses axe-core under the hood, covers eight template languages, maps runtime results back to source, and drives an agent to fix and re-verify.</p></section>
 <section class="wrap prose cta">
   <h2>Open source, MIT licensed</h2>
-  <p>Built in CI and published to npm with signed provenance. Full documentation, changelog and issues are on <a href="https://github.com/mintwork/wcag-audit-skill">GitHub</a>.</p>
+  <p class="lede">Built in CI and published to npm with signed provenance. The full docs, changelog and issues are on <a href="https://github.com/mintwork/wcag-audit-skill">GitHub</a>.</p>
   <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/wcag-audit-skill">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/wcag-audit-skill">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/wcag-accessibility-audit">GitHub Marketplace</a></li><li><a class="btn" href="https://www.agensi.io/skills/wcag-accessibility-audit">Agensi</a></li></ul>
 </section>
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
-    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="https://github.com/mintwork">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
   </div>
 </footer>
 </body>

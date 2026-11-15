@@ -17,11 +17,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1714">
+<meta name="theme-color" content="#0b1a15">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Page not found"}</script>
 </head>
 <body>
@@ -38,12 +42,12 @@
   </div>
 </header>
 <main id="main">
-<section class="hero"><div class="wrap"><h1>Page not found</h1><p class="lede">That page doesn't exist. Try the <a href="/">home page</a> or one of the tools.</p><ul class="actions"><li><a class="btn" href="/tokenscope/">tokenscope</a></li><li><a class="btn" href="/honest-tests/">honest-tests</a></li><li><a class="btn" href="/wcag-audit-skill/">wcag-audit-skill</a></li><li><a class="btn" href="/agent-ready/">agent-ready</a></li><li><a class="btn" href="/runway/">runway</a></li></ul></div></section>
+<section class="hero tool"><div class="hero-bg" data-threads aria-hidden="true"></div><div class="wrap"><h1 class="display">Page not found</h1><p class="lede">That page doesn't exist. Try the <a href="/">home page</a> or one of the tools.</p><ul class="actions"><li><a class="btn" href="/tokenscope/">tokenscope</a></li><li><a class="btn" href="/honest-tests/">honest-tests</a></li><li><a class="btn" href="/wcag-audit-skill/">wcag-audit-skill</a></li><li><a class="btn" href="/agent-ready/">agent-ready</a></li><li><a class="btn" href="/runway/">runway</a></li></ul></div></section>
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
-    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="https://github.com/mintwork">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
   </div>
 </footer>
 </body>

@@ -16,11 +16,15 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1714">
+<meta name="theme-color" content="#0b1a15">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/","logo":"https://mintwork.github.io/assets/mintwork-avatar-1024.png","description":"mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.","sameAs":["https://github.com/mintwork","https://www.npmjs.com/org/mintwork","https://www.agensi.io/creators/mintwork"]}</script>
 </head>
 <body>
@@ -39,38 +43,41 @@
 <main id="main">
 
 <section class="hero home">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
   <div class="wrap">
-    <h1>Developer tools you're glad you installed.</h1>
-    <p class="lede">Each one solves a real problem, runs where you work, and stays out of your way. Open source, MIT licensed, built in public.</p>
-    <ul class="actions"><li><a class="btn primary" href="#tools">See the tools</a></li><li><a class="btn" href="https://github.com/mintwork">GitHub</a></li></ul>
+    <h1 class="display" data-decrypt="[&quot;Developer tools&quot;,&quot;you're glad&quot;,&quot;you installed.&quot;]"><span class="line">Developer tools</span><span class="line">you're glad</span><span class="line">you installed.</span></h1>
+    <p class="lede">Small, open-source tools for the parts of software work nobody else fixes. Each one is a single command away.</p>
+    <div class="prompt" data-prompt="[{&quot;name&quot;:&quot;tokenscope&quot;,&quot;pkg&quot;:&quot;@mintwork/tokenscope&quot;},{&quot;name&quot;:&quot;honest-tests&quot;,&quot;pkg&quot;:&quot;@mintwork/honest-tests&quot;},{&quot;name&quot;:&quot;wcag-audit-skill&quot;,&quot;pkg&quot;:&quot;@mintwork/wcag-audit-skill&quot;},{&quot;name&quot;:&quot;agent-ready&quot;,&quot;pkg&quot;:&quot;@mintwork/agent-ready&quot;},{&quot;name&quot;:&quot;runway&quot;,&quot;pkg&quot;:&quot;@mintwork/runway&quot;}]">
+      <ul class="prompt-static"><li><a href="/tokenscope/">npx @mintwork/tokenscope</a></li><li><a href="/honest-tests/">npx @mintwork/honest-tests</a></li><li><a href="/wcag-audit-skill/">npx @mintwork/wcag-audit-skill</a></li><li><a href="/agent-ready/">npx @mintwork/agent-ready</a></li><li><a href="/runway/">npx @mintwork/runway</a></li></ul>
+    </div>
   </div>
 </section>
 <section class="wrap" id="tools">
-  <h2>Tools</h2>
-  <ul class="grid tools">
-    <li class="card tool"><h3><a href="/tokenscope/">tokenscope</a></h3><p class="muted">Waste finder and token flame graph for AI coding agents</p><p>ccusage tells you what you spent. tokenscope tells you what you wasted, and how to stop it.</p><pre><code>npx @mintwork/tokenscope</code></pre></li>
-    <li class="card tool"><h3><a href="/honest-tests/">honest-tests</a></h3><p class="muted">Fake-test detector and mutation testing for AI coding agents</p><p>Your AI wrote 200 tests. Many of them can't fail. honest-tests finds them, and proves it by breaking your code and watching the tests stay green.</p><pre><code>npx @mintwork/honest-tests</code></pre></li>
-    <li class="card tool"><h3><a href="/wcag-audit-skill/">wcag-audit-skill</a></h3><p class="muted">WCAG 2.2 accessibility audit skill and CLI</p><p>AI ships inaccessible UIs. This makes your agent find the barriers, verify each one, and fix them with minimal, explained changes.</p><pre><code>npx @mintwork/wcag-audit-skill</code></pre></li>
-    <li class="card tool"><h3><a href="/agent-ready/">agent-ready</a></h3><p class="muted">Agent readiness score for repositories</p><p>Score how well Claude Code, Codex and Cursor can work in your repo, then auto-fix the gaps.</p><pre><code>npx @mintwork/agent-ready</code></pre></li>
-    <li class="card tool"><h3><a href="/runway/">runway</a></h3><p class="muted">Self-hosted GitHub Actions runners on Lambda MicroVMs, EC2, Fargate and Lambda</p><p>Pick the machine per job with one runs-on line: a Firecracker MicroVM, an EC2 Spot instance, a Fargate task or a Lambda function, in your account, ended the moment the job finishes.</p><pre><code>npx -y @mintwork/runway setup</code></pre></li>
+  <div class="index-head"><h2>The tools</h2><p>All MIT licensed, all on npm with signed provenance.</p></div>
+  <ul class="tools">
+    <li data-spotlight><a class="row" href="/tokenscope/"><span class="name">tokenscope</span><span class="what">Waste finder and token flame graph for AI coding agents</span><code>npx @mintwork/tokenscope</code></a></li>
+    <li data-spotlight><a class="row" href="/honest-tests/"><span class="name">honest-tests</span><span class="what">Fake-test detector and mutation testing for AI coding agents</span><code>npx @mintwork/honest-tests</code></a></li>
+    <li data-spotlight><a class="row" href="/wcag-audit-skill/"><span class="name">wcag-audit-skill</span><span class="what">WCAG 2.2 accessibility audit skill and CLI</span><code>npx @mintwork/wcag-audit-skill</code></a></li>
+    <li data-spotlight><a class="row" href="/agent-ready/"><span class="name">agent-ready</span><span class="what">Agent readiness score for repositories</span><code>npx @mintwork/agent-ready</code></a></li>
+    <li data-spotlight><a class="row" href="/runway/"><span class="name">runway</span><span class="what">Self-hosted GitHub Actions runners on Lambda MicroVMs, EC2, Fargate and Lambda</span><code>npx -y @mintwork/runway setup</code></a></li>
   </ul>
 </section>
-<section class="wrap prose">
+<section class="wrap">
   <h2>How we build</h2>
   <ul class="principles">
-    <li><strong>One problem, one tool.</strong> Small, focused tools beat sprawling platforms.</li>
-    <li><strong>Honest output.</strong> Estimates are labeled as estimates, and nothing is inflated to look impressive.</li>
-    <li><strong>Local-first.</strong> Your code and data stay on your machine unless you ask otherwise.</li>
-    <li><strong>Light footprint.</strong> Few dependencies, fast startup, nothing running in the background.</li>
-    <li><strong>Verifiable releases.</strong> Every package is built in CI and published with signed npm provenance.</li>
-    <li><strong>Open by default.</strong> MIT licensed, with issues and pull requests welcome.</li>
+    <li><strong>One problem, one tool.</strong><span>Small, focused tools beat sprawling platforms.</span></li>
+    <li><strong>Honest output.</strong><span>Estimates are labeled as estimates, and nothing is inflated to look impressive.</span></li>
+    <li><strong>Local-first.</strong><span>Your code and data stay on your machine unless you ask otherwise.</span></li>
+    <li><strong>Light footprint.</strong><span>Few dependencies, fast startup, nothing running in the background.</span></li>
+    <li><strong>Verifiable releases.</strong><span>Every package is built in CI and published with signed npm provenance.</span></li>
+    <li><strong>Open by default.</strong><span>MIT licensed, with issues and pull requests welcome.</span></li>
   </ul>
 </section>
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
-    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="https://github.com/mintwork">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
   </div>
 </footer>
 </body>

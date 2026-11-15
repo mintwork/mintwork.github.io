@@ -1,7 +1,10 @@
 // Builds the static site for https://mintwork.github.io/ (plain HTML, no Jekyll).
-// Edit the TOOLS data or the templates below, then run `node build.mjs` and commit the output.
+// Edit the TOOLS data or the templates below, then run `npm run build` and commit the output.
+// Pages are complete static HTML; islands/main.jsx (bundled to docs/assets/app.js) adds the
+// interactive parts on top: the hero threads, the decrypting headlines, the live prompt.
 import fs from 'node:fs';
 import path from 'node:path';
+import { build } from 'esbuild';
 
 const SITE = 'https://mintwork.github.io';
 const ORG = 'https://github.com/mintwork';
@@ -174,6 +177,12 @@ function code(lines) {
   return `<pre><code>${esc(lines.join('\n'))}</code></pre>`;
 }
 
+/** A command block with a copy button: copies the commands without their # comments. */
+function cmd(lines) {
+  const copy = lines.map((l) => l.replace(/\s+#.*$/, '')).join('\n');
+  return `<pre data-copy="${esc(copy)}"><code>${esc(lines.join('\n'))}</code></pre>`;
+}
+
 function layout({ title, description, pathname, body, jsonld, ogImage = `${SITE}/assets/og.png` }) {
   const url = SITE + pathname;
   return `<!doctype html>
@@ -194,11 +203,15 @@ function layout({ title, description, pathname, body, jsonld, ogImage = `${SITE}
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1714">
+<meta name="theme-color" content="#0b1a15">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
 <script type="application/ld+json">${JSON.stringify(jsonld)}</script>
 </head>
 <body>
@@ -219,8 +232,8 @@ ${body}
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
-    <p><a href="${ORG}">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="${ORG}">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
   </div>
 </footer>
 </body>
@@ -238,15 +251,21 @@ function links(t) {
   return `<ul class="actions">${out.map(([href, label, cls]) => `<li><a class="btn${cls ? ' ' + cls : ''}" href="${href}">${label}</a></li>`).join('')}</ul>`;
 }
 
+/** A headline that decrypts into place (islands/main.jsx); plain text without the script. */
+function display(lines) {
+  return `<h1 class="display" data-decrypt="${esc(JSON.stringify(lines))}">${lines.map((l) => `<span class="line">${esc(l)}</span>`).join('')}</h1>`;
+}
+
 function toolPage(t) {
   const pathname = `/${t.repo}/`;
   const body = `
-<section class="hero">
+<section class="hero tool">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
   <div class="wrap">
-    <p class="eyebrow">${esc(t.repo)}</p>
-    <h1>${esc(t.h1)}</h1>
+    <p class="crumb"><a href="/">mintwork</a> / <span>${esc(t.repo)}</span></p>
+    ${display([t.h1])}
     <p class="lede">${esc(t.lede)}</p>
-    ${code(t.install)}
+    ${cmd(t.install)}
     ${links(t)}
   </div>
 </section>
@@ -260,14 +279,14 @@ function toolPage(t) {
 </section>
 <section class="wrap">
   <h2>What it does</h2>
-  <ul class="grid">
-    ${t.features.map(([h, p]) => `<li class="card"><h3>${h}</h3><p>${p}</p></li>`).join('\n    ')}
+  <ul class="features">
+    ${t.features.map(([h, p]) => `<li><h3>${h}</h3><p>${p}</p></li>`).join('\n    ')}
   </ul>
 </section>
-${t.sections.map(([h, html]) => `<section class="wrap prose"><h2>${esc(h)}</h2>${html}</section>`).join('\n')}
+${t.sections.map(([h, html]) => `<section class="wrap prose"><h2>${esc(h)}</h2>${html.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, (m, c) => `<pre data-copy="${c.split('\n').map((l) => l.replace(/\s+#.*$/, '')).join('\n')}"><code>${c}</code></pre>`)}</section>`).join('\n')}
 <section class="wrap prose cta">
   <h2>Open source, MIT licensed</h2>
-  <p>Built in CI and published to npm with signed provenance. Full documentation, changelog and issues are on <a href="${ORG}/${t.repo}">GitHub</a>.</p>
+  <p class="lede">Built in CI and published to npm with signed provenance. The full docs, changelog and issues are on <a href="${ORG}/${t.repo}">GitHub</a>.</p>
   ${links(t)}
 </section>`;
   const jsonld = {
@@ -293,29 +312,33 @@ function homePage() {
   const pathname = '/';
   const description =
     'mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can\'t fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.';
+  const prompt = TOOLS.map((t) => ({ name: t.repo, pkg: t.pkg }));
   const body = `
 <section class="hero home">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
   <div class="wrap">
-    <h1>Developer tools you're glad you installed.</h1>
-    <p class="lede">Each one solves a real problem, runs where you work, and stays out of your way. Open source, MIT licensed, built in public.</p>
-    <ul class="actions"><li><a class="btn primary" href="#tools">See the tools</a></li><li><a class="btn" href="${ORG}">GitHub</a></li></ul>
+    ${display(['Developer tools', "you're glad", 'you installed.'])}
+    <p class="lede">Small, open-source tools for the parts of software work nobody else fixes. Each one is a single command away.</p>
+    <div class="prompt" data-prompt="${esc(JSON.stringify(prompt))}">
+      <ul class="prompt-static">${TOOLS.map((t) => `<li><a href="/${t.repo}/">npx ${esc(t.pkg)}</a></li>`).join('')}</ul>
+    </div>
   </div>
 </section>
 <section class="wrap" id="tools">
-  <h2>Tools</h2>
-  <ul class="grid tools">
-    ${TOOLS.map((t) => `<li class="card tool"><h3><a href="/${t.repo}/">${esc(t.repo)}</a></h3><p class="muted">${esc(t.tagline)}</p><p>${esc(t.lede)}</p><pre><code>${esc(t.cardCmd ?? `npx ${t.pkg}`)}</code></pre></li>`).join('\n    ')}
+  <div class="index-head"><h2>The tools</h2><p>All MIT licensed, all on npm with signed provenance.</p></div>
+  <ul class="tools">
+    ${TOOLS.map((t) => `<li data-spotlight><a class="row" href="/${t.repo}/"><span class="name">${esc(t.repo)}</span><span class="what">${esc(t.tagline)}</span><code>${esc(t.cardCmd ?? `npx ${t.pkg}`)}</code></a></li>`).join('\n    ')}
   </ul>
 </section>
-<section class="wrap prose">
+<section class="wrap">
   <h2>How we build</h2>
   <ul class="principles">
-    <li><strong>One problem, one tool.</strong> Small, focused tools beat sprawling platforms.</li>
-    <li><strong>Honest output.</strong> Estimates are labeled as estimates, and nothing is inflated to look impressive.</li>
-    <li><strong>Local-first.</strong> Your code and data stay on your machine unless you ask otherwise.</li>
-    <li><strong>Light footprint.</strong> Few dependencies, fast startup, nothing running in the background.</li>
-    <li><strong>Verifiable releases.</strong> Every package is built in CI and published with signed npm provenance.</li>
-    <li><strong>Open by default.</strong> MIT licensed, with issues and pull requests welcome.</li>
+    <li><strong>One problem, one tool.</strong><span>Small, focused tools beat sprawling platforms.</span></li>
+    <li><strong>Honest output.</strong><span>Estimates are labeled as estimates, and nothing is inflated to look impressive.</span></li>
+    <li><strong>Local-first.</strong><span>Your code and data stay on your machine unless you ask otherwise.</span></li>
+    <li><strong>Light footprint.</strong><span>Few dependencies, fast startup, nothing running in the background.</span></li>
+    <li><strong>Verifiable releases.</strong><span>Every package is built in CI and published with signed npm provenance.</span></li>
+    <li><strong>Open by default.</strong><span>MIT licensed, with issues and pull requests welcome.</span></li>
   </ul>
 </section>`;
   const jsonld = {
@@ -331,9 +354,30 @@ function homePage() {
 }
 
 function notFound() {
-  const body = `<section class="hero"><div class="wrap"><h1>Page not found</h1><p class="lede">That page doesn't exist. Try the <a href="/">home page</a> or one of the tools.</p><ul class="actions">${TOOLS.map((t) => `<li><a class="btn" href="/${t.repo}/">${t.repo}</a></li>`).join('')}</ul></div></section>`;
+  const body = `<section class="hero tool"><div class="hero-bg" data-threads aria-hidden="true"></div><div class="wrap"><h1 class="display">Page not found</h1><p class="lede">That page doesn't exist. Try the <a href="/">home page</a> or one of the tools.</p><ul class="actions">${TOOLS.map((t) => `<li><a class="btn" href="/${t.repo}/">${t.repo}</a></li>`).join('')}</ul></div></section>`;
   return layout({ title: 'Page not found · mintwork', description: 'Page not found.', pathname: '/404.html', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Page not found' } }).replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"');
 }
+
+// Islands and fonts.
+const bundle = await build({
+  entryPoints: ['islands/main.jsx'],
+  bundle: true,
+  minify: true,
+  format: 'esm',
+  target: 'es2022',
+  jsx: 'automatic',
+  define: { 'process.env.NODE_ENV': '"production"' },
+  metafile: true,
+  outfile: 'docs/assets/app.js',
+  legalComments: 'eof',
+  logLevel: 'warning',
+});
+fs.mkdirSync('docs/assets/fonts', { recursive: true });
+for (const [from, to] of [
+  ['@fontsource-variable/martian-mono/files/martian-mono-latin-standard-normal.woff2', 'martian-mono.woff2'],
+  ['@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2', 'schibsted-grotesk.woff2'],
+  ['@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-italic.woff2', 'schibsted-grotesk-italic.woff2'],
+]) fs.copyFileSync(path.join('node_modules', from), path.join('docs/assets/fonts', to));
 
 const pages = [homePage(), ...TOOLS.map(toolPage)];
 for (const { pathname, html } of pages) {
@@ -348,4 +392,6 @@ fs.writeFileSync(
 );
 fs.writeFileSync('docs/robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
 fs.writeFileSync('docs/.nojekyll', '');
-console.log(`built ${pages.length} pages + 404, sitemap, robots`);
+console.log(`built ${pages.length} pages + 404, sitemap, robots, islands`);
+const kb = (n) => `${Math.round(n / 1024)} KB`;
+console.log(`app.js ${kb(bundle.metafile.outputs['docs/assets/app.js'].bytes)}`);
