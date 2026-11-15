@@ -171,6 +171,38 @@ const TOOLS = [
     ],
     keywords: ['GitHub Actions', 'self-hosted runner', 'AWS', 'Lambda MicroVMs', 'EC2 Spot', 'Fargate', 'CI'],
   },
+  {
+    repo: 'whatbroke',
+    pkg: '@mintwork/whatbroke',
+    title: 'whatbroke: why did CI fail? Only the log lines that are new',
+    description:
+      'whatbroke compares a failed GitHub Actions job with its last passing run and shows only the new lines, failure first: in your terminal, as a PR comment, or for a coding agent. No AI, no setup.',
+    h1: 'Why did CI fail? See only what changed',
+    lede: 'whatbroke compares a failed job with the last run that passed and shows only the lines that are new, failure first. In your terminal, as a PR comment, or for your coding agent.',
+    tagline: 'CI failure explainer: diff a failed job against its last passing run',
+    cardCmd: 'npx -y @mintwork/whatbroke',
+    install: ['npx -y @mintwork/whatbroke   # the latest failed run on this branch', 'npx -y @mintwork/whatbroke <run or job URL>'],
+    image: { src: raw('whatbroke', 'docs/demo.gif'), alt: "The last 12 lines of ruff's failed CI log are only git cleanup; whatbroke on the same job shows the Rust compile error first, out of 2,206 lines; then the same result as a PR comment", w: 1180, h: 604 },
+    problem: [
+      'A failed CI job is thousands of lines: dependency installs, download progress, deprecation warnings, every test that passed. The end of the log, where people and agents look first, is usually cleanup. GitHub\'s red annotation says "Process completed with exit code 1".',
+      'Most of those lines were also in the last run that passed. whatbroke hides everything the two runs share and shows what\'s left, so the failure is the first thing you read.',
+    ],
+    features: [
+      ['Compared with the last green run', 'Finds the latest passing run of the same job by itself, on your branch or the default branch, and diffs the two logs. Matrix jobs match even when a version in their name changed.'],
+      ['Failure first, in 40 lines', 'New lines are grouped into blocks, repeats are dropped, and failure headers (FAIL, error[E…], AssertionError, Traceback) rank above summaries. Long stack traces keep their first frames.'],
+      ['A PR comment, also for forks', 'The <a href="https://github.com/marketplace/actions/what-broke-in-ci">What Broke in CI</a> Action comments when CI fails and updates the same comment next time. It reads logs only and never checks out fork code.'],
+      ['Built for coding agents', '<code>--agent</code> prints plain lines with line numbers: about 2% of the tokens of the full log, with the cause still in it.'],
+      ['Re-run or fix?', 'Infrastructure failures (DNS, 5xx, runner timeouts, rejected tokens, used-up quotas) are labelled with what to do, so you don\'t debug the network.'],
+      ['Measured, not promised', 'On 28 real failures from 10 projects it had never seen, the cause was in its 40 lines for 27. The last 40 lines of the log: 10.'],
+    ],
+    sections: [
+      ['As a PR comment', `<p>Add a workflow that runs when your CI fails:</p>${code(['on:', '  workflow_run:', '    workflows: [CI]', '    types: [completed]', 'permissions:', '  actions: read', '  pull-requests: write', 'jobs:', '  explain:', "    if: github.event.workflow_run.conclusion == 'failure'", '    runs-on: ubuntu-26.04', '    steps:', '      - uses: mintwork/whatbroke@v0'])}`],
+      ['For your coding agent', `<p>Tell it in <code>AGENTS.md</code> or <code>CLAUDE.md</code>:</p>${code(['When a CI run fails, run `npx -y @mintwork/whatbroke --agent`', 'and start from its output instead of reading the full job log.'])}`],
+      ['How is this different?', `<p>Copilot's "explain error" and AI CI-fixers send your log to a model and summarize it. whatbroke doesn't guess: it shows the exact lines that changed since the last green run, offline, in a few seconds, with no account or API key. Use both: give the AI whatbroke's 40 lines instead of the whole log. The <a href="${ORG}/whatbroke/blob/main/docs/benchmark.md">benchmark</a> shows how it was measured, misses included.</p>`],
+    ],
+    marketplace: 'https://github.com/marketplace/actions/what-broke-in-ci',
+    keywords: ['CI failure', 'GitHub Actions logs', 'log diff', 'flaky tests', 'coding agents', 'debugging'],
+  },
 ];
 
 function code(lines) {
@@ -311,7 +343,7 @@ ${t.sections.map(([h, html]) => `<section class="wrap prose"><h2>${esc(h)}</h2>$
 function homePage() {
   const pathname = '/';
   const description =
-    'mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can\'t fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.';
+    'mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can\'t fail, audit accessibility, score repos for AI coding agents, run GitHub Actions jobs on your own AWS compute, and see why CI failed.';
   const prompt = TOOLS.map((t) => ({ name: t.repo, pkg: t.pkg }));
   const stack = TOOLS.map((t) => ({ name: t.repo, img: `/assets/tools/${t.repo}.webp`, alt: t.image.alt }));
   const body = `

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="WVu6Z85C__KQ1yxxumnjmCY1oyKOKbfml9HF-RDppuE">
+<title>whatbroke: why did CI fail? Only the log lines that are new</title>
+<meta name="description" content="whatbroke compares a failed GitHub Actions job with its last passing run and shows only the new lines, failure first: in your terminal, as a PR comment, or for a coding agent. No AI, no setup.">
+<link rel="canonical" href="https://mintwork.github.io/whatbroke/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="mintwork">
+<meta property="og:title" content="whatbroke: why did CI fail? Only the log lines that are new">
+<meta property="og:description" content="whatbroke compares a failed GitHub Actions job with its last passing run and shows only the new lines, failure first: in your terminal, as a PR comment, or for a coding agent. No AI, no setup.">
+<meta property="og:url" content="https://mintwork.github.io/whatbroke/">
+<meta property="og:image" content="https://mintwork.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1211">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="preload" href="/assets/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/schibsted-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/app.css">
+<script type="module" src="/assets/app.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"whatbroke","description":"whatbroke compares a failed GitHub Actions job with its last passing run and shows only the new lines, failure first: in your terminal, as a PR comment, or for a coding agent. No AI, no setup.","url":"https://mintwork.github.io/whatbroke/","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows","softwareRequirements":"Node.js 22+","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/mintwork/whatbroke","downloadUrl":"https://www.npmjs.com/package/@mintwork/whatbroke","keywords":"CI failure, GitHub Actions logs, log diff, flaky tests, coding agents, debugging","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/"}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="/"><svg class="mark" viewBox="104 104 304 304" aria-hidden="true" focusable="false"><defs><mask id="leaf-vein"><rect width="512" height="512" fill="#000"/><path d="M126 386 A260 260 0 0 1 386 126 A260 260 0 0 1 126 386 Z" fill="#fff"/><path d="M135.19 395.19 L301.41 213.41 A2 2 0 0 0 298.59 210.59 L116.81 376.81 Z" fill="#000"/></mask></defs><rect width="512" height="512" fill="currentColor" mask="url(#leaf-vein)"/></svg><span>mintwork</span></a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="/#tools">Tools</a></li>
+        <li><a href="https://github.com/mintwork">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="hero tool">
+  <div class="hero-bg" data-threads aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="crumb"><a href="/">mintwork</a> / <span>whatbroke</span></p>
+    <h1 class="display"><span class="line">Why did CI fail? See only what changed</span></h1>
+    <p class="lede">whatbroke compares a failed job with the last run that passed and shows only the lines that are new, failure first. In your terminal, as a PR comment, or for your coding agent.</p>
+    <pre data-copy="npx -y @mintwork/whatbroke
+npx -y @mintwork/whatbroke &lt;run or job URL&gt;"><code>npx -y @mintwork/whatbroke   # the latest failed run on this branch
+npx -y @mintwork/whatbroke &lt;run or job URL&gt;</code></pre>
+    <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/whatbroke">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/whatbroke">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/what-broke-in-ci">GitHub Marketplace</a></li></ul>
+  </div>
+</section>
+<section class="wrap">
+  <img class="demo" src="https://raw.githubusercontent.com/mintwork/whatbroke/main/docs/demo.gif" alt="The last 12 lines of ruff's failed CI log are only git cleanup; whatbroke on the same job shows the Rust compile error first, out of 2,206 lines; then the same result as a PR comment" width="1180" height="604" loading="lazy" decoding="async">
+  
+</section>
+<section class="wrap prose">
+  <h2>The problem</h2>
+  <p>A failed CI job is thousands of lines: dependency installs, download progress, deprecation warnings, every test that passed. The end of the log, where people and agents look first, is usually cleanup. GitHub's red annotation says "Process completed with exit code 1".</p>
+  <p>Most of those lines were also in the last run that passed. whatbroke hides everything the two runs share and shows what's left, so the failure is the first thing you read.</p>
+</section>
+<section class="wrap">
+  <h2>What it does</h2>
+  <ul class="features">
+    <li><h3>Compared with the last green run</h3><p>Finds the latest passing run of the same job by itself, on your branch or the default branch, and diffs the two logs. Matrix jobs match even when a version in their name changed.</p></li>
+    <li><h3>Failure first, in 40 lines</h3><p>New lines are grouped into blocks, repeats are dropped, and failure headers (FAIL, error[E…], AssertionError, Traceback) rank above summaries. Long stack traces keep their first frames.</p></li>
+    <li><h3>A PR comment, also for forks</h3><p>The <a href="https://github.com/marketplace/actions/what-broke-in-ci">What Broke in CI</a> Action comments when CI fails and updates the same comment next time. It reads logs only and never checks out fork code.</p></li>
+    <li><h3>Built for coding agents</h3><p><code>--agent</code> prints plain lines with line numbers: about 2% of the tokens of the full log, with the cause still in it.</p></li>
+    <li><h3>Re-run or fix?</h3><p>Infrastructure failures (DNS, 5xx, runner timeouts, rejected tokens, used-up quotas) are labelled with what to do, so you don't debug the network.</p></li>
+    <li><h3>Measured, not promised</h3><p>On 28 real failures from 10 projects it had never seen, the cause was in its 40 lines for 27. The last 40 lines of the log: 10.</p></li>
+  </ul>
+</section>
+<section class="wrap prose"><h2>As a PR comment</h2><p>Add a workflow that runs when your CI fails:</p><pre data-copy="on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+permissions:
+  actions: read
+  pull-requests: write
+jobs:
+  explain:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: mintwork/whatbroke@v0"><code>on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+permissions:
+  actions: read
+  pull-requests: write
+jobs:
+  explain:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: mintwork/whatbroke@v0</code></pre></section>
+<section class="wrap prose"><h2>For your coding agent</h2><p>Tell it in <code>AGENTS.md</code> or <code>CLAUDE.md</code>:</p><pre data-copy="When a CI run fails, run `npx -y @mintwork/whatbroke --agent`
+and start from its output instead of reading the full job log."><code>When a CI run fails, run `npx -y @mintwork/whatbroke --agent`
+and start from its output instead of reading the full job log.</code></pre></section>
+<section class="wrap prose"><h2>How is this different?</h2><p>Copilot's "explain error" and AI CI-fixers send your log to a model and summarize it. whatbroke doesn't guess: it shows the exact lines that changed since the last green run, offline, in a few seconds, with no account or API key. Use both: give the AI whatbroke's 40 lines instead of the whole log. The <a href="https://github.com/mintwork/whatbroke/blob/main/docs/benchmark.md">benchmark</a> shows how it was measured, misses included.</p></section>
+<section class="wrap prose cta">
+  <h2>Open source, MIT licensed</h2>
+  <p class="lede">Built in CI and published to npm with signed provenance. The full docs, changelog and issues are on <a href="https://github.com/mintwork/whatbroke">GitHub</a>.</p>
+  <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/whatbroke">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/whatbroke">npm</a></li><li><a class="btn" href="https://github.com/marketplace/actions/what-broke-in-ci">GitHub Marketplace</a></li></ul>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><a href="/">mintwork</a> makes developer tools you're glad you installed. MIT licensed, made in Germany.</p>
+    <ul aria-label="mintwork elsewhere"><li><a href="https://github.com/mintwork">GitHub</a></li><li><a href="https://www.npmjs.com/org/mintwork">npm</a></li><li><a href="https://www.agensi.io/creators/mintwork">Agensi</a></li></ul>
+  </div>
+</footer>
+</body>
+</html>
