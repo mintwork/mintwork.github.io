@@ -137,6 +137,37 @@ const TOOLS = [
     marketplace: 'https://github.com/marketplace/actions/agent-readiness-score',
     keywords: ['AGENTS.md', 'CLAUDE.md', 'AI coding agent', 'repository score', 'developer experience'],
   },
+  {
+    repo: 'runway',
+    pkg: '@mintwork/runway',
+    title: 'runway: run GitHub Actions jobs on your own AWS compute',
+    description:
+      'runway runs each GitHub Actions job on a fresh machine in your own AWS account: Lambda MicroVMs, EC2 Spot, ECS Fargate or Lambda functions, picked per job with runs-on labels. One command to set up.',
+    h1: 'Run GitHub Actions jobs on your own AWS compute',
+    lede: 'Pick the machine per job with one runs-on line: a Firecracker MicroVM, an EC2 Spot instance, a Fargate task or a Lambda function, in your account, ended the moment the job finishes.',
+    tagline: 'Self-hosted GitHub Actions runners on Lambda MicroVMs, EC2, Fargate and Lambda',
+    cardCmd: 'npx -y @mintwork/runway setup',
+    install: ['npx -y @mintwork/runway setup --owner <your-org> --region eu-central-1', 'npx -y @mintwork/runway status   # health, images, recent runners'],
+    image: { src: raw('runway', 'docs/demo.gif'), alt: 'runway setup deploying the stack, creating the GitHub App in the browser and building images (a real install, sped up), then a workflow using four compute types, then runway status listing a runner on each', w: 1040, h: 644 },
+    problem: [
+      'GitHub\'s hosted runners are easy until you need more: a bigger machine, arm64, access to your VPC, or a bill that doesn\'t grow by the minute. Self-hosting usually means a fleet of always-on instances, a Terraform module to maintain, and runners that leak state from one job to the next.',
+      'runway puts a small dispatcher in your AWS account. Every job that asks for <code>runway</code> gets a machine of its own, launched for that job, registered as a single-use runner, and ended when the job finishes. Nothing runs, or bills, between jobs.',
+    ],
+    features: [
+      ['Four compute types', 'Lambda MicroVMs (Docker included, ~25 s to start), EC2 on-demand or Spot, ECS Fargate tasks and Lambda functions, x64 or arm64, any size.'],
+      ['Chosen per job', '<code>runs-on: [runway, ec2, spot, arm64, 8cpu]</code>. Unknown labels are refused with a "did you mean", never silently ignored.'],
+      ['A fresh machine every time', 'One job per MicroVM, instance, task or Lambda sandbox, with a just-in-time runner token. Nothing is reused.'],
+      ['Nothing exposed', 'The only endpoint is the webhook, open to GitHub\'s IP ranges alone. The GitHub App is created from your terminal, and its key goes straight to SSM in your account.'],
+      ['Falls back instead of failing', 'No capacity or quota? The job moves to the next compute type, or waits and retries for up to 90 minutes, so a burst of jobs queues instead of failing.'],
+      ['Nothing to babysit', 'Images rebuild when GitHub ships a new runner, a sweeper ends anything left behind, and <code>destroy</code> removes everything runway made.'],
+    ],
+    sections: [
+      ['Set up in one command', `<p>You need AWS credentials that can create a CloudFormation stack, owner rights on the GitHub organization, and Node 22+. Setup takes about 10 minutes: it deploys the stack, opens a local page that creates runway\'s GitHub App, and builds the runner images.</p>${code(['npx -y @mintwork/runway setup --owner <your-org> --region eu-central-1'])}<p>Then use it in any workflow:</p>${code(['jobs:', '  test:', '    runs-on: [runway, microvm]          # Firecracker VM, Docker included', '  build:', '    runs-on: [runway, ec2, spot, 8cpu]  # EC2 Spot, on-demand if Spot is short', '  lint:', '    runs-on: [runway, lambda]           # Lambda function, billed per millisecond'])}`],
+      ['Your tools on the runners', `<p>The images are small on purpose. Use <code>actions/setup-node</code> and friends per job, or bake your tools into every image with a script, and change it whenever you like:</p>${code(['npx -y @mintwork/runway update --runner-tools ./runner-tools.sh'])}<p>See <a href="${ORG}/runway/blob/main/docs/custom-tools.md">adding or updating tools</a>.</p>`],
+      ['How is this different?', `<p><a href="https://runs-on.com">RunsOn</a> runs excellent EC2 runners in your account, with a commercial licence for companies. <a href="https://github.com/github-aws-runners/terraform-aws-github-runner">terraform-aws-github-runner</a> is the established module for large EC2 fleets. runway is MIT licensed, one command to set up, and adds MicroVMs, Fargate and Lambda, picked per job from <code>runs-on</code>.</p>`],
+    ],
+    keywords: ['GitHub Actions', 'self-hosted runner', 'AWS', 'Lambda MicroVMs', 'EC2 Spot', 'Fargate', 'CI'],
+  },
 ];
 
 function code(lines) {
@@ -261,7 +292,7 @@ ${t.sections.map(([h, html]) => `<section class="wrap prose"><h2>${esc(h)}</h2>$
 function homePage() {
   const pathname = '/';
   const description =
-    'mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can\'t fail, audit accessibility, and score repos for AI coding agents.';
+    'mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can\'t fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.';
   const body = `
 <section class="hero home">
   <div class="wrap">
@@ -273,7 +304,7 @@ function homePage() {
 <section class="wrap" id="tools">
   <h2>Tools</h2>
   <ul class="grid tools">
-    ${TOOLS.map((t) => `<li class="card tool"><h3><a href="/${t.repo}/">${esc(t.repo)}</a></h3><p class="muted">${esc(t.tagline)}</p><p>${esc(t.lede)}</p><pre><code>npx ${esc(t.pkg)}</code></pre></li>`).join('\n    ')}
+    ${TOOLS.map((t) => `<li class="card tool"><h3><a href="/${t.repo}/">${esc(t.repo)}</a></h3><p class="muted">${esc(t.tagline)}</p><p>${esc(t.lede)}</p><pre><code>${esc(t.cardCmd ?? `npx ${t.pkg}`)}</code></pre></li>`).join('\n    ')}
   </ul>
 </section>
 <section class="wrap prose">

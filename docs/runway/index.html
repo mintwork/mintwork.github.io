@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="WVu6Z85C__KQ1yxxumnjmCY1oyKOKbfml9HF-RDppuE">
+<title>runway: run GitHub Actions jobs on your own AWS compute</title>
+<meta name="description" content="runway runs each GitHub Actions job on a fresh machine in your own AWS account: Lambda MicroVMs, EC2 Spot, ECS Fargate or Lambda functions, picked per job with runs-on labels. One command to set up.">
+<link rel="canonical" href="https://mintwork.github.io/runway/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="mintwork">
+<meta property="og:title" content="runway: run GitHub Actions jobs on your own AWS compute">
+<meta property="og:description" content="runway runs each GitHub Actions job on a fresh machine in your own AWS account: Lambda MicroVMs, EC2 Spot, ECS Fargate or Lambda functions, picked per job with runs-on labels. One command to set up.">
+<meta property="og:url" content="https://mintwork.github.io/runway/">
+<meta property="og:image" content="https://mintwork.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0D1714">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<link rel="stylesheet" href="/assets/site.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"runway","description":"runway runs each GitHub Actions job on a fresh machine in your own AWS account: Lambda MicroVMs, EC2 Spot, ECS Fargate or Lambda functions, picked per job with runs-on labels. One command to set up.","url":"https://mintwork.github.io/runway/","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux, Windows","softwareRequirements":"Node.js 22+","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/mintwork/runway","downloadUrl":"https://www.npmjs.com/package/@mintwork/runway","keywords":"GitHub Actions, self-hosted runner, AWS, Lambda MicroVMs, EC2 Spot, Fargate, CI","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/"}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="/"><svg class="mark" viewBox="104 104 304 304" aria-hidden="true" focusable="false"><defs><mask id="leaf-vein"><rect width="512" height="512" fill="#000"/><path d="M126 386 A260 260 0 0 1 386 126 A260 260 0 0 1 126 386 Z" fill="#fff"/><path d="M135.19 395.19 L301.41 213.41 A2 2 0 0 0 298.59 210.59 L116.81 376.81 Z" fill="#000"/></mask></defs><rect width="512" height="512" fill="currentColor" mask="url(#leaf-vein)"/></svg><span>mintwork</span></a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="/#tools">Tools</a></li>
+        <li><a href="https://github.com/mintwork">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">runway</p>
+    <h1>Run GitHub Actions jobs on your own AWS compute</h1>
+    <p class="lede">Pick the machine per job with one runs-on line: a Firecracker MicroVM, an EC2 Spot instance, a Fargate task or a Lambda function, in your account, ended the moment the job finishes.</p>
+    <pre><code>npx -y @mintwork/runway setup --owner &lt;your-org&gt; --region eu-central-1
+npx -y @mintwork/runway status   # health, images, recent runners</code></pre>
+    <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/runway">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/runway">npm</a></li></ul>
+  </div>
+</section>
+<section class="wrap">
+  <img class="demo" src="https://raw.githubusercontent.com/mintwork/runway/main/docs/demo.gif" alt="runway setup deploying the stack, creating the GitHub App in the browser and building images (a real install, sped up), then a workflow using four compute types, then runway status listing a runner on each" width="1040" height="644" loading="lazy" decoding="async">
+  
+</section>
+<section class="wrap prose">
+  <h2>The problem</h2>
+  <p>GitHub's hosted runners are easy until you need more: a bigger machine, arm64, access to your VPC, or a bill that doesn't grow by the minute. Self-hosting usually means a fleet of always-on instances, a Terraform module to maintain, and runners that leak state from one job to the next.</p>
+  <p>runway puts a small dispatcher in your AWS account. Every job that asks for <code>runway</code> gets a machine of its own, launched for that job, registered as a single-use runner, and ended when the job finishes. Nothing runs, or bills, between jobs.</p>
+</section>
+<section class="wrap">
+  <h2>What it does</h2>
+  <ul class="grid">
+    <li class="card"><h3>Four compute types</h3><p>Lambda MicroVMs (Docker included, ~25 s to start), EC2 on-demand or Spot, ECS Fargate tasks and Lambda functions, x64 or arm64, any size.</p></li>
+    <li class="card"><h3>Chosen per job</h3><p><code>runs-on: [runway, ec2, spot, arm64, 8cpu]</code>. Unknown labels are refused with a "did you mean", never silently ignored.</p></li>
+    <li class="card"><h3>A fresh machine every time</h3><p>One job per MicroVM, instance, task or Lambda sandbox, with a just-in-time runner token. Nothing is reused.</p></li>
+    <li class="card"><h3>Nothing exposed</h3><p>The only endpoint is the webhook, open to GitHub's IP ranges alone. The GitHub App is created from your terminal, and its key goes straight to SSM in your account.</p></li>
+    <li class="card"><h3>Falls back instead of failing</h3><p>No capacity or quota? The job moves to the next compute type, or waits and retries for up to 90 minutes, so a burst of jobs queues instead of failing.</p></li>
+    <li class="card"><h3>Nothing to babysit</h3><p>Images rebuild when GitHub ships a new runner, a sweeper ends anything left behind, and <code>destroy</code> removes everything runway made.</p></li>
+  </ul>
+</section>
+<section class="wrap prose"><h2>Set up in one command</h2><p>You need AWS credentials that can create a CloudFormation stack, owner rights on the GitHub organization, and Node 22+. Setup takes about 10 minutes: it deploys the stack, opens a local page that creates runway's GitHub App, and builds the runner images.</p><pre><code>npx -y @mintwork/runway setup --owner &lt;your-org&gt; --region eu-central-1</code></pre><p>Then use it in any workflow:</p><pre><code>jobs:
+  test:
+    runs-on: [runway, microvm]          # Firecracker VM, Docker included
+  build:
+    runs-on: [runway, ec2, spot, 8cpu]  # EC2 Spot, on-demand if Spot is short
+  lint:
+    runs-on: [runway, lambda]           # Lambda function, billed per millisecond</code></pre></section>
+<section class="wrap prose"><h2>Your tools on the runners</h2><p>The images are small on purpose. Use <code>actions/setup-node</code> and friends per job, or bake your tools into every image with a script, and change it whenever you like:</p><pre><code>npx -y @mintwork/runway update --runner-tools ./runner-tools.sh</code></pre><p>See <a href="https://github.com/mintwork/runway/blob/main/docs/custom-tools.md">adding or updating tools</a>.</p></section>
+<section class="wrap prose"><h2>How is this different?</h2><p><a href="https://runs-on.com">RunsOn</a> runs excellent EC2 runners in your account, with a commercial licence for companies. <a href="https://github.com/github-aws-runners/terraform-aws-github-runner">terraform-aws-github-runner</a> is the established module for large EC2 fleets. runway is MIT licensed, one command to set up, and adds MicroVMs, Fargate and Lambda, picked per job from <code>runs-on</code>.</p></section>
+<section class="wrap prose cta">
+  <h2>Open source, MIT licensed</h2>
+  <p>Built in CI and published to npm with signed provenance. Full documentation, changelog and issues are on <a href="https://github.com/mintwork/runway">GitHub</a>.</p>
+  <ul class="actions"><li><a class="btn primary" href="https://github.com/mintwork/runway">Star on GitHub</a></li><li><a class="btn" href="https://www.npmjs.com/package/@mintwork/runway">npm</a></li></ul>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><a href="/">mintwork</a> · Developer tools you're glad you installed. · MIT licensed · Made in Germany</p>
+    <p><a href="https://github.com/mintwork">GitHub</a> · <a href="https://www.npmjs.com/org/mintwork">npm</a> · <a href="https://www.agensi.io/creators/mintwork">Agensi</a></p>
+  </div>
+</footer>
+</body>
+</html>

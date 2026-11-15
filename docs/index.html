@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="WVu6Z85C__KQ1yxxumnjmCY1oyKOKbfml9HF-RDppuE">
 <title>mintwork: developer tools you're glad you installed</title>
-<meta name="description" content="mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, and score repos for AI coding agents.">
+<meta name="description" content="mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.">
 <link rel="canonical" href="https://mintwork.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="mintwork">
 <meta property="og:title" content="mintwork: developer tools you're glad you installed">
-<meta property="og:description" content="mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, and score repos for AI coding agents.">
+<meta property="og:description" content="mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.">
 <meta property="og:url" content="https://mintwork.github.io/">
 <meta property="og:image" content="https://mintwork.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -21,7 +21,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/favicon-180.png">
 <link rel="stylesheet" href="/assets/site.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/","logo":"https://mintwork.github.io/assets/mintwork-avatar-1024.png","description":"mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, and score repos for AI coding agents.","sameAs":["https://github.com/mintwork","https://www.npmjs.com/org/mintwork","https://www.agensi.io/creators/mintwork"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"mintwork","url":"https://mintwork.github.io/","logo":"https://mintwork.github.io/assets/mintwork-avatar-1024.png","description":"mintwork makes small, open-source developer tools: find wasted AI agent spend, catch tests that can't fail, audit accessibility, score repos for AI coding agents, and run GitHub Actions jobs on your own AWS compute.","sameAs":["https://github.com/mintwork","https://www.npmjs.com/org/mintwork","https://www.agensi.io/creators/mintwork"]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -52,6 +52,7 @@
     <li class="card tool"><h3><a href="/honest-tests/">honest-tests</a></h3><p class="muted">Fake-test detector and mutation testing for AI coding agents</p><p>Your AI wrote 200 tests. Many of them can't fail. honest-tests finds them, and proves it by breaking your code and watching the tests stay green.</p><pre><code>npx @mintwork/honest-tests</code></pre></li>
     <li class="card tool"><h3><a href="/wcag-audit-skill/">wcag-audit-skill</a></h3><p class="muted">WCAG 2.2 accessibility audit skill and CLI</p><p>AI ships inaccessible UIs. This makes your agent find the barriers, verify each one, and fix them with minimal, explained changes.</p><pre><code>npx @mintwork/wcag-audit-skill</code></pre></li>
     <li class="card tool"><h3><a href="/agent-ready/">agent-ready</a></h3><p class="muted">Agent readiness score for repositories</p><p>Score how well Claude Code, Codex and Cursor can work in your repo, then auto-fix the gaps.</p><pre><code>npx @mintwork/agent-ready</code></pre></li>
+    <li class="card tool"><h3><a href="/runway/">runway</a></h3><p class="muted">Self-hosted GitHub Actions runners on Lambda MicroVMs, EC2, Fargate and Lambda</p><p>Pick the machine per job with one runs-on line: a Firecracker MicroVM, an EC2 Spot instance, a Fargate task or a Lambda function, in your account, ended the moment the job finishes.</p><pre><code>npx -y @mintwork/runway setup</code></pre></li>
   </ul>
 </section>
 <section class="wrap prose">
